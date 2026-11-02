@@ -30,7 +30,8 @@ config without installing it:
 psmux -f .\.psmux.conf
 ```
 
-For detailed setup and compatibility notes, see [`PSMUX.md`](PSMUX.md).
+The main profile sources `$HOME\.psmux.conf.local` after defaults, so local
+settings can override them.
 
 ## Key Bindings
 
