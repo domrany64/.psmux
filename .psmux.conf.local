@@ -1,0 +1,5 @@
+# Personal psmux settings are loaded after ~/.psmux.conf.
+# Add psmux set, bind, and unbind commands below to override defaults.
+#
+# Example:
+# set -g status-right "#S | %H:%M"

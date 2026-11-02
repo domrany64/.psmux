@@ -1,11 +1,8 @@
 # Oh My Psmux
 
-A Windows-native psmux profile porting the familiar defaults and workflow of Oh
-My Tmux to psmux. This is a work in progress; the native profile lives in
-[`psmux.conf`](psmux.conf).
-
-The upstream `.tmux.conf` remains available for tmux on Linux, macOS, and WSL.
-Use `psmux.conf` for native Windows psmux.
+A Windows-native psmux configuration porting the familiar defaults and workflow
+of Oh My Tmux. The main config is [`.psmux.conf`](.psmux.conf), with
+[`.psmux.conf.local`](.psmux.conf.local) for personal overrides.
 
 ## Requirements
 
@@ -24,11 +21,13 @@ psmux
 ```
 
 The installer backs up an existing `$HOME\.psmux.conf` with a timestamp before
-installing the new profile. To preview the operation without changing files,
-run `.\install.ps1 -WhatIf`. You can also try the config without installing it:
+installing the profile. It creates `$HOME\.psmux.conf.local` only if one does
+not already exist, preserving your personal settings. Preview the operation
+without changing files with `.\install.ps1 -WhatIf`. You can also try the
+config without installing it:
 
 ```powershell
-psmux -f .\psmux.conf
+psmux -f .\.psmux.conf
 ```
 
 For detailed setup and compatibility notes, see [`PSMUX.md`](PSMUX.md).

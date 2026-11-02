@@ -3,6 +3,6 @@
 # git
 .gitignore text
 
-.tmux.conf eol=lf
-.tmux.conf.local eol=lf
+.psmux.conf eol=lf
+.psmux.conf.local eol=lf
 install.ps1 eol=lf
