@@ -1,5 +1,46 @@
-# Personal psmux settings are loaded after ~/.psmux.conf.
-# Add psmux set, bind, and unbind commands below to override defaults.
-#
-# Example:
-# set -g status-right "#S | %H:%M"
+# Oh My Psmux local settings.
+# This file is loaded after ~/.psmux.conf; edit values here to customize defaults.
+
+# Theme palette and status line, adapted from Oh My Tmux's local defaults.
+set -g status-style "fg=#8a8a8a,bg=#080808"
+set -g status-left-length 60
+set -g status-right-length 120
+set -g status-left "#[fg=#080808,bg=#ffff00,bold] ❐ #S #[default] | ↑#(Get-CimInstance Win32_OperatingSystem | ForEach-Object { $u = (Get-Date) - $_.LastBootUpTime; '{0}d {1}h' -f [int]$u.TotalDays, $u.Hours }) "
+set -g status-right "#{?client_prefix,⌨ ,}#{?mouse,↗ ,}#{?session_many_attached,⚇ ,}#{?pane_synchronized,⚏ ,}#{?#{!=:#{@battery_display},none},#{@battery_display} ,}#{?#{!=:#{@cpu_display},none},#{@cpu_display} ,}#{?#{!=:#{@ram_display},none},#{@ram_display} ,}#{?#{!=:#{@net_speed_display},none},#{@net_speed_display} ,}%R , %d %b | #{user}@#{host} | #{=36:pane_current_path} "
+set -g @battery_display none
+set -g @cpu_display none
+set -g @ram_display none
+set -g @net_speed_display none
+set -g window-status-style "fg=#8a8a8a,bg=#080808"
+set -g window-status-current-style "fg=#080808,bg=#00afff,bold"
+set -g window-status-format "#I #W#{?window_bell_flag,!,}#{?window_zoomed_flag,Z,}"
+set -g window-status-current-format "#I #W#{?window_bell_flag,!,}#{?window_zoomed_flag,Z,}"
+set -g window-status-activity-style "underscore"
+set -g window-status-bell-style "fg=#ffff00,bold,blink"
+set -g pane-border-style "fg=#303030"
+set -g pane-active-border-style "fg=#00afff"
+set -g message-style "fg=#080808,bg=#ffff00,bold"
+set -g message-command-style "fg=#ffff00,bg=#080808,bold"
+set -g mode-style "fg=#080808,bg=#ffff00,bold"
+set -g set-titles-string "#h ❐ #S ● #I #W"
+
+# Personal behavior overrides. Uncomment or change values as needed.
+# set -g history-limit 10000
+# set -g mouse off
+# set -g mode-keys emacs
+# set -g status-position top
+# set -g status-interval 5
+# set -g pane-active-border-style "fg=#d70000"
+# bind C-c new-session -c "#{pane_current_path}"
+
+# Oh My Tmux's new-pane-retain-current-path=true default is implemented by
+# split bindings in ~/.psmux.conf. New sessions do not retain the current path.
+# psmux uses xterm-256color and supports truecolor natively on Windows.
+# Copy-mode selections reach the Windows clipboard natively; no yank plugin needed.
+
+# PPM replaces TPM. Install PPM once, then Prefix+I installs declared plugins.
+set -g @plugin 'psmux-plugins/ppm'
+set -g @plugin 'psmux-plugins/psmux-battery'
+set -g @plugin 'psmux-plugins/psmux-cpu'
+set -g @plugin 'psmux-plugins/psmux-net-speed'
+if-shell 'Test-Path "$HOME/.psmux/plugins/ppm/ppm.ps1"' 'run "~/.psmux/plugins/ppm/ppm.ps1"' ''

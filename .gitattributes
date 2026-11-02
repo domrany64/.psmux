@@ -6,3 +6,4 @@
 .psmux.conf eol=lf
 .psmux.conf.local eol=lf
 install.ps1 eol=lf
+scripts/*.ps1 eol=lf

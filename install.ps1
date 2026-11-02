@@ -5,8 +5,10 @@ $ErrorActionPreference = 'Stop'
 
 $sourcePath = Join-Path -Path $PSScriptRoot -ChildPath '.psmux.conf'
 $localSourcePath = Join-Path -Path $PSScriptRoot -ChildPath '.psmux.conf.local'
+$helperSourcePath = Join-Path -Path $PSScriptRoot -ChildPath 'scripts'
 $profilePath = Join-Path -Path $HOME -ChildPath '.psmux.conf'
 $localProfilePath = Join-Path -Path $HOME -ChildPath '.psmux.conf.local'
+$helperDestinationPath = Join-Path -Path $HOME -ChildPath '.psmux/plugins/oh-my-psmux'
 
 if (-not (Test-Path -LiteralPath $sourcePath -PathType Leaf)) {
     throw "Required psmux profile was not found: $sourcePath"
@@ -14,6 +16,10 @@ if (-not (Test-Path -LiteralPath $sourcePath -PathType Leaf)) {
 
 if (-not (Test-Path -LiteralPath $localSourcePath -PathType Leaf)) {
     throw "Required psmux local profile template was not found: $localSourcePath"
+}
+
+if (-not (Test-Path -LiteralPath $helperSourcePath -PathType Container)) {
+    throw "Required psmux helper scripts were not found: $helperSourcePath"
 }
 
 if (Test-Path -LiteralPath $profilePath -PathType Container) {
@@ -75,4 +81,18 @@ elseif ($PSCmdlet.ShouldProcess($localProfilePath, 'Install psmux local profile 
         }
     }
     Write-Host "Installed psmux local profile template: $localProfilePath"
+}
+
+if ($PSCmdlet.ShouldProcess($helperDestinationPath, 'Install psmux picker helpers')) {
+    New-Item -ItemType Directory -Path $helperDestinationPath -Force | Out-Null
+    foreach ($helper in Get-ChildItem -LiteralPath $helperSourcePath -Filter '*.ps1' -File) {
+        $destination = Join-Path -Path $helperDestinationPath -ChildPath $helper.Name
+        if (Test-Path -LiteralPath $destination -PathType Leaf) {
+            Write-Host "Keeping existing helper script: $destination"
+        }
+        else {
+            Copy-Item -LiteralPath $helper.FullName -Destination $destination
+            Write-Host "Installed helper script: $destination"
+        }
+    }
 }

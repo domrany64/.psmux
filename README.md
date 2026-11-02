@@ -45,6 +45,8 @@ the following keys:
 - `C-h` and `C-l`: previous or next window
 - `Tab`: return to the last window
 - `m`: toggle mouse mode
+- `F`: choose and open Windows paths found in pane history
+- `U`: choose and open URLs found in pane history
 - `r`: reload `$HOME\.psmux.conf`
 - `e`: open `$HOME\.psmux.conf` in Notepad
 - `Enter`: enter copy mode; `v` starts selection and `y` copies it
@@ -52,14 +54,62 @@ the following keys:
 
 ## Port Status
 
-The profile keeps the core prefix, navigation, pane management, vi copy mode,
-Windows clipboard integration, and a status theme inspired by the original.
-It uses `xterm-256color`, the recommended terminal type for psmux on Windows.
+This is a behavior port, not a line-for-line translation. The original tmux
+shell bootstrap is replaced with tmux-compatible psmux commands, PowerShell,
+and native Windows plugins.
 
-Oh My Tmux's POSIX-shell initialization, TPM bootstrap, PathPicker integration,
-and shell-generated battery, uptime, and host status helpers are not part of
-this native profile. Use psmux's PowerShell plugins and plugin manager, [ppm],
-for Windows equivalents.
+**Ported**
+
+- Prefixes, pane/window navigation, splits, resizing, copy mode, and buffer keys
+- Theme colors, status layout, bell/activity indicators, titles, and window flags
+- Pane split path retention, local `user`/`host`, and Windows uptime display
+- Native Windows clipboard
+- `Prefix + F/U` path and URL pickers using popup windows
+- Optional battery, CPU/memory, and network status through official psmux plugins
+
+The profile uses `xterm-256color` and native 24-bit color, as recommended by
+psmux on Windows. To enable the optional plugins, install PPM once, then press
+`Prefix + I`:
+
+```powershell
+$pluginRepo = Join-Path $env:TEMP ("psmux-plugins-" + [guid]::NewGuid())
+git clone --depth 1 https://github.com/psmux/psmux-plugins.git $pluginRepo
+New-Item -ItemType Directory "$HOME\.psmux\plugins" -Force | Out-Null
+Copy-Item "$pluginRepo\ppm" "$HOME\.psmux\plugins\ppm" -Recurse
+Remove-Item $pluginRepo -Recurse -Force
+```
+
+The installer adds picker scripts under `$HOME\.psmux\plugins\oh-my-psmux` and
+preserves existing copies.
+
+**Remaining Differences**
+
+- SSH/Mosh-aware username, hostname, and remote-pane reconstruction are absent;
+  status shows local Windows identity. Pane-split bindings explicitly pass
+  `#{pane_current_path}`; new-session/new-window bindings add no path override.
+- POSIX load average has no Windows equivalent. CPU/memory plugins show different
+  metrics. Uptime is one rendered segment, not upstream's `#{uptime_*}` variables.
+- Upstream custom formats `#{circled_window_index}`, `#{circled_session_name}`,
+  `#{root}`, `#{pretty_pane_current_path}`, and user-defined shell functions
+  aren’t provided as matching variables. Pane paths are shortened with psmux's
+  native truncation format instead.
+- Battery plugins show their own percentage/status presentation; exact upstream
+  battery bars, gradients, Powerline separators, and per-segment theme controls
+  are not reproduced.
+- `Prefix + +` uses psmux's pane zoom, not upstream's separate-window maximize.
+  Path picker supports existing absolute Windows paths; URL picker opens URLs in
+  the browser. Neither matches all PathPicker/Urlscan/Urlview features.
+- `Prefix + e` opens Notepad; `VISUAL`/`EDITOR` selection and tmux syntax-aware
+  editing are not ported.
+- PPM uses manual `Prefix + I/U/M` install/update/clean actions. Oh My Tmux's
+  automatic TPM updates on launch/reload and `#!important` mechanism are absent;
+  local psmux commands load after defaults and can override them directly.
+- Upstream `.tmux.conf.local` shell assignments and custom functions are not
+  compatible. Translate customizations to psmux commands in
+  `.psmux.conf.local`.
+
+The main config and local overrides still allow native psmux `set`, `bind`, and
+`unbind` customization. See `.psmux.conf.local` for examples.
 
 [ppm]: https://github.com/psmux/psmux-plugins
 
