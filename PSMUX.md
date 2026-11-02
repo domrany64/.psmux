@@ -6,24 +6,23 @@ psmux on Windows. It is not an official project by the Oh my tmux! author.
 
 ## Install
 
-In PowerShell, from this repository's directory, test the profile without
-changing your existing config:
+In PowerShell, clone this repository and run the installer:
 
 ```powershell
-psmux -f .\psmux.conf
-```
-
-To install it as psmux's default config, back up any existing profile before
-copying:
-
-```powershell
-if (Test-Path "$HOME\.psmux.conf") {
-    $backup = "$HOME\.psmux.conf.$(Get-Date -Format yyyyMMddHHmmss).bak"
-    Copy-Item "$HOME\.psmux.conf" $backup
-}
-Copy-Item .\psmux.conf "$HOME\.psmux.conf"
+git clone https://github.com/domrany64/.psmux.git
+Set-Location .\.psmux
+.\install.ps1
 psmux
 ```
+
+The installer backs up an existing `$HOME\.psmux.conf` with a timestamp before
+installing the new profile. Preview its actions without changing files with:
+
+```powershell
+.\install.ps1 -WhatIf
+```
+
+To test the config without installing it, run `psmux -f .\psmux.conf`.
 
 Optional personal tmux-style settings can go in
 `$HOME\.psmux.conf.local`; the profile sources that file if it exists. The
